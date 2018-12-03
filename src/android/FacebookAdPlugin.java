@@ -63,7 +63,8 @@ public class FacebookAdPlugin extends GenericAdPlugin {
     @Override
     protected void pluginInitialize() {
     	super.pluginInitialize();
-    	
+		AudienceNetworkAds.initialize(getActivity());
+
     	this.adSize = __AdSizeFromString("SMART_BANNER");
 	}
     
