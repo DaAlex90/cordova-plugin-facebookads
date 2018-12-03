@@ -25,9 +25,12 @@ import android.view.ViewGroup;
 import android.view.View.OnTouchListener;
 import android.widget.RelativeLayout;
 import com.facebook.ads.*;
-import com.facebook.ads.NativeAd.Image;
-import com.facebook.ads.NativeAd.Rating;
+//import com.facebook.ads.NativeAd.Image;
+//import com.facebook.ads.NativeAd.Rating;
 import com.rjfun.cordova.ad.GenericAdPlugin;
+import com.facebook.ads.NativeAdBase.Image;
+import com.facebook.ads.NativeAdBase.Rating;
+import com.facebook.ads.NativeAdListener;
 
 public class FacebookAdPlugin extends GenericAdPlugin {
     private static final String LOGTAG = "FacebookAds";
@@ -209,7 +212,7 @@ public class FacebookAdPlugin extends GenericAdPlugin {
 				unit.view.setOnTouchListener(t);
 
             	unit.ad = new NativeAd(getActivity(), adId);
-            	unit.ad.setAdListener(new AdListener(){
+            	unit.ad.setAdListener(new NativeAdListener(){
             	    @Override
             	    public void onError(Ad ad, AdError error) {
                     	fireAdErrorEvent(EVENT_AD_FAILLOAD, error.getErrorCode(), error.getErrorMessage(), ADTYPE_NATIVE);
@@ -229,6 +232,12 @@ public class FacebookAdPlugin extends GenericAdPlugin {
 				    public void onLoggingImpression(Ad ad) {
 						// Ad impression logged callback
 				    }
+
+
+				    @Override
+					public void onMediaDownloaded(Ad ad){
+
+					}
             	});
             	
             	nativeAds.put(adId, unit);
@@ -246,12 +255,12 @@ public class FacebookAdPlugin extends GenericAdPlugin {
         	if((unit != null) && (unit.ad == ad)){
 				String jsonData = "{}";
 				try {
-					String titleForAd = unit.ad.getAdTitle();
+					String titleForAd = unit.ad.getAdvertiserName();
 					Image coverImage = unit.ad.getAdCoverImage();
 					Image iconForAd = unit.ad.getAdIcon();
 					String socialContextForAd = unit.ad.getAdSocialContext();
 					String titleForAdButton = unit.ad.getAdCallToAction();
-					String textForAdBody = unit.ad.getAdBody();
+					String textForAdBody = unit.ad.getAdBodyText();
 					Rating appRatingForAd = unit.ad.getAdStarRating();
 					
 					JSONObject json = new JSONObject();
@@ -272,14 +281,14 @@ public class FacebookAdPlugin extends GenericAdPlugin {
 					
 					JSONObject coverInfo = new JSONObject();
                     if(coverImage != null) {
-                        coverInfo.put("url", coverImage.getUrl());
+//                        coverInfo.put("url", coverImage.getUrl());
                         coverInfo.put("width", coverImage.getWidth());
                         coverInfo.put("height", coverImage.getHeight());
                     }
 					
 					JSONObject iconInfo = new JSONObject();
                     if(iconForAd != null) {
-                        iconInfo.put("url", iconForAd.getUrl());
+//                        iconInfo.put("url", iconForAd.getUrl());
                         iconInfo.put("width", iconForAd.getWidth());
                         iconInfo.put("height", iconForAd.getHeight());
                     }
@@ -293,7 +302,7 @@ public class FacebookAdPlugin extends GenericAdPlugin {
 				}
                 if (unit.ad != null) {
                   unit.ad.unregisterView();
-                  unit.ad.registerViewForInteraction(unit.tracking);
+                  unit.ad.registerViewForInteraction(unit.tracking, null);
                 }
 				fireEvent(__getProductShortName(), EVENT_AD_LOADED, jsonData);
         		break;
