@@ -24,7 +24,7 @@
     </js-module>
 
 	<dependency id="cordova-plugin-extension"/>
-	<dependency id="cordova-facebook-audnet-sdk"/>
+	<dependency id="https://github.com/mingz2013/cordova-facebook-audnet-sdk"/>
 
     <!-- android -->
     <platform name="android">
