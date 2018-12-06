@@ -496,6 +496,7 @@ public class FacebookAdPlugin extends GenericAdPlugin {
     @Override
     protected Object __createInterstitial(String adId) {
         if (isTesting) adId = TEST_INTERSTITIAL_ID;
+        Log.d("FacebookAdPlugin", "__createInterstitial...adId:" + adId + "isTesing" + isTesting);
         InterstitialAd ad = new InterstitialAd(getActivity(), adId);
         ad.setAdListener(new InterstitialAdListener() {
             @Override
@@ -561,14 +562,14 @@ public class FacebookAdPlugin extends GenericAdPlugin {
 
 
     protected String __getTestRewardVideoId() {
-        Log.d("__getTestRewardVideoId", "__getTestRewardVideoId.....");
+        Log.d("FacebookAdPlugin", "__getTestRewardVideoId.....");
         return "";
     }
 
 
     protected Object __prepareRewardVideoAd(String adId) {
 
-        Log.d("__prepareRewardVideoAd", "__prepareRewardVideoAd....." + adId);
+        Log.d("FacebookAdPlugin", "__prepareRewardVideoAd.....:" + adId);
 // Instantiate a RewardedVideoAd object.
         // NOTE: the placement ID will eventually identify this as your App, you can ignore it for
         // now, while you are testing and replace it later when you have signed up.
@@ -580,7 +581,7 @@ public class FacebookAdPlugin extends GenericAdPlugin {
         String TAG = "__prepareRewardVideoAd";
 
         if (isTesting) adId = TEST_REWARDVIDEO_ID;
-
+        Log.d("FacebookAdPlugin", "__prepareRewardVideoAd.....adId:" + adId + " isTesting:" + isTesting);
         RewardedVideoAd rewardedVideoAd = new RewardedVideoAd(getActivity(), adId);
         rewardedVideoAd.setAdListener(new RewardedVideoAdListener() {
             @Override
