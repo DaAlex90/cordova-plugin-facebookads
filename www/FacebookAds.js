@@ -105,6 +105,27 @@ fbanExport.showInterstitial = function(successCallback, failureCallback) {
 	cordova.exec( successCallback, failureCallback, 'FacebookAds', 'showInterstitial', [] );
 };
 
+fbanExport.prepareRewardVideoAd = function(args, successCallback, failureCallback) {
+console.log("fbanExport.prepareRewardVideoAd....");
+    var options = {};
+    if(typeof args === 'object') {
+        for(var k in args) {
+            if(k === 'success') { if(args[k] === 'function') successCallback = args[k]; }
+            else if(k === 'error') { if(args[k] === 'function') failureCallback = args[k]; }
+            else {
+                options[k] = args[k];
+            }
+        }
+    } else if(typeof args === 'string') {
+        options = { adId: args };
+    }
+    cordova.exec( successCallback, failureCallback, 'FacebookAds', 'prepareRewardVideoAd', [ args ] );
+};
+
+fbanExport.showRewardVideoAd = function(successCallback, failureCallback) {
+    cordova.exec( successCallback, failureCallback, 'FacebookAds', 'showRewardVideoAd', [] );
+};
+
 fbanExport.createNativeAd = function(adId, successCallback, failureCallback) {
 	cordova.exec( successCallback, failureCallback, 'FacebookAds', 'createNativeAd', [adId] );
 };
