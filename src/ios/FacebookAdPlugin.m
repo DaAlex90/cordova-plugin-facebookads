@@ -16,7 +16,7 @@
 
 #define OPT_DEVICE_HASH          @"deviceHash"
 
-@interface FacebookAdPlugin()<FBAdViewDelegate, FBInterstitialAdDelegate, FBNativeAdDelegate, UIGestureRecognizerDelegate>
+@interface FacebookAdPlugin()<FBAdViewDelegate, FBInterstitialAdDelegate, FBRewardedVideoAdDelegate, FBNativeAdDelegate, UIGestureRecognizerDelegate>
 
 @property (assign) FBAdSize adSize;
 @property (nonatomic, retain) NSMutableDictionary* nativeads;
@@ -229,6 +229,32 @@
         ad.delegate = nil;
     }
 }
+
+- (NSObject*) __prepareRewardVideoAd:(NSString*)adId
+{
+//    [FBRewardedVideoAd sharedInstance].delegate = self;
+//    [[FBRewardedVideoAd sharedInstance] loadRequest:[GADRequest request]
+//                                           withAdUnitID:adId];
+//    return nil;
+
+    FBRewardedVideoAd* ad = [[FBRewardedVideoAd alloc] initWithPlacementID:adId];
+    ad.delegate = self;
+
+    return ad;
+
+}
+- (BOOL) __showRewardVideoAd:(NSObject*)rewardvideo
+{
+    if([rewardvideo isKindOfClass:[FBRewardedVideoAd class]]) {
+        FBRewardedVideoAd* ad = (FBRewardedVideoAd*) rewardvideo;
+        if(ad && ad.isAdValid) {
+            [ad showAdFromRootViewController:[self getViewController]];
+            return true;
+        }
+    }
+    return false;
+}
+
 
 - (void)handleTapOnWebView:(UITapGestureRecognizer *)sender
 {
@@ -458,6 +484,124 @@
 {
     [self fireAdEvent:EVENT_AD_WILLPRESENT withType:ADTYPE_INTERSTITIAL];
 }
+
+
+
+#pragma mark - FBRewardedVideoAdDelegate
+/**
+ Sent after an ad has been clicked by the person.
+
+ @param rewardedVideoAd An FBRewardedVideoAd object sending the message.
+ */
+- (void)rewardedVideoAdDidClick:(FBRewardedVideoAd *)rewardedVideoAd
+{
+    NSLog(@"rewardedVideoAdDidClick.....");
+    [self fireAdEvent:EVENT_AD_LEAVEAPP withType:ADTYPE_REWARDVIDEO];
+}
+
+/**
+ Sent when an ad has been successfully loaded.
+
+ @param rewardedVideoAd An FBRewardedVideoAd object sending the message.
+ */
+- (void)rewardedVideoAdDidLoad:(FBRewardedVideoAd *)rewardedVideoAd
+{
+//    if (self.rewardvideo && self.autoShowRewardVideo) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self __showRewardVideoAd:<#(NSObject *)#>:self.rewardvideo];
+//        });
+//    }
+    NSLog(@"rewardedVideoAdDidLoad.....");
+    [self fireAdEvent:EVENT_AD_LOADED withType:ADTYPE_REWARDVIDEO];
+
+}
+
+/**
+ Sent after an FBRewardedVideoAd object has been dismissed from the screen, returning control
+ to your application.
+
+ @param rewardedVideoAd An FBRewardedVideoAd object sending the message.
+ */
+- (void)rewardedVideoAdDidClose:(FBRewardedVideoAd *)rewardedVideoAd
+{
+    NSLog(@"rewardedVideoAdDidClose.....");
+    [self fireAdEvent:EVENT_AD_DISMISS withType:ADTYPE_REWARDVIDEO];
+}
+
+/**
+ Sent immediately before an FBRewardedVideoAd object will be dismissed from the screen.
+
+ @param rewardedVideoAd An FBRewardedVideoAd object sending the message.
+ */
+- (void)rewardedVideoAdWillClose:(FBRewardedVideoAd *)rewardedVideoAd
+{
+    NSLog(@"rewardedVideoAdWillClose.....");
+    [self fireAdEvent:EVENT_AD_WILLDISMISS withType:ADTYPE_REWARDVIDEO];
+}
+
+/**
+ Sent after an FBRewardedVideoAd fails to load the ad.
+
+ @param rewardedVideoAd An FBRewardedVideoAd object sending the message.
+ @param error An error object containing details of the error.
+ */
+- (void)rewardedVideoAd:(FBRewardedVideoAd *)rewardedVideoAd didFailWithError:(NSError *)error
+{
+    NSLog(@"didFailWithError.....");
+     [self fireAdErrorEvent:EVENT_AD_FAILLOAD withCode:(int)error.code withMsg:[error localizedDescription] withType:ADTYPE_REWARDVIDEO];
+
+}
+
+/**
+ Sent after the FBRewardedVideoAd object has finished playing the video successfully.
+ Reward the user on this callback.
+
+ @param rewardedVideoAd An FBRewardedVideoAd object sending the message.
+ */
+- (void)rewardedVideoAdVideoComplete:(FBRewardedVideoAd *)rewardedVideoAd
+{
+    NSLog(@"rewardedVideoAdVideoComplete.....");
+//     [self fireAdEvent:EVENT_AD_PRESENT withType:ADTYPE_REWARDVIDEO];
+    NSString* obj = [self __getProductShortName];
+    NSString* json = [NSString stringWithFormat:@"{'adNetwork':'%@','adType':'%@','adEvent':'%@','rewardType':'reward','rewardAmount':1}",
+                      obj, ADTYPE_REWARDVIDEO, EVENT_AD_PRESENT];
+    [self fireEvent:obj event:EVENT_AD_PRESENT withData:json];
+}
+
+/**
+ Sent immediately before the impression of an FBRewardedVideoAd object will be logged.
+
+ @param rewardedVideoAd An FBRewardedVideoAd object sending the message.
+ */
+- (void)rewardedVideoAdWillLogImpression:(FBRewardedVideoAd *)rewardedVideoAd
+{
+    NSLog(@"rewardedVideoAdWillLogImpression.....");
+    [self fireAdEvent:EVENT_AD_WILLDISMISS withType:ADTYPE_REWARDVIDEO];
+}
+
+/**
+ Sent if server call to publisher's reward endpoint returned HTTP status code 200.
+
+ @param rewardedVideoAd An FBRewardedVideoAd object sending the message.
+ */
+- (void)rewardedVideoAdServerRewardDidSucceed:(FBRewardedVideoAd *)rewardedVideoAd
+{
+//     [self fireAdEvent:EVENT_AD_PRESENT withType:ADTYPE_REWARDVIDEO];
+   NSLog(@"rewardedVideoAdServerRewardDidSucceed.....");
+}
+
+/**
+ Sent if server call to publisher's reward endpoint did not return HTTP status code 200
+ or if the endpoint timed out.
+
+ @param rewardedVideoAd An FBRewardedVideoAd object sending the message.
+ */
+- (void)rewardedVideoAdServerRewardDidFail:(FBRewardedVideoAd *)rewardedVideoAd
+{
+    NSLog(@"rewardedVideoAdServerRewardDidFail.....");
+}
+
+
 
 /**
  * document.addEventListener('onAdLoaded', function(data));
