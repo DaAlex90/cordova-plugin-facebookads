@@ -1,3 +1,25 @@
+# fork form
+[https://github.com/floatinghotpot/cordova-plugin-facebookads](https://github.com/floatinghotpot/cordova-plugin-facebookads)
+
+# How to use
+*** modify ./platforms/ios/cordova/lib/Podfile.js 100 行 8.0 改为 9.0. for facebook 5.1.0 sdk***
+
+`cordova plugin add https://github.com/floatinghotpot/cordova-plugin-facebookads`
+ 
+
+# What new
+- add reward video Ad
+- upgrade to 5.1.0
+
+
+
+
+----
+----
+
+# Old Readme
+
+
 # Cordova Plugin for Facebook AudienceNetwork #
 
 # Quick Demo
