@@ -28,8 +28,6 @@ import android.view.View.OnTouchListener;
 import android.widget.RelativeLayout;
 
 import com.facebook.ads.*;
-//import com.facebook.ads.NativeAd.Image;
-//import com.facebook.ads.NativeAd.Rating;
 import com.rjfun.cordova.ad.GenericAdPlugin;
 import com.facebook.ads.NativeAdBase.Image;
 import com.facebook.ads.NativeAdBase.Rating;
@@ -293,16 +291,12 @@ public class FacebookAdPlugin extends GenericAdPlugin {
 
                     JSONObject coverInfo = new JSONObject();
                     if (coverImage != null) {
-//                        coverInfo.put("url", coverImage.getUrl());
-                        coverInfo.put("width", coverImage.getWidth());
-                        coverInfo.put("height", coverImage.getHeight());
+                        coverInfo.put("coverData", coverImage);
                     }
 
                     JSONObject iconInfo = new JSONObject();
                     if (iconForAd != null) {
-//                        iconInfo.put("url", iconForAd.getUrl());
-                        iconInfo.put("width", iconForAd.getWidth());
-                        iconInfo.put("height", iconForAd.getHeight());
+                        iconInfo.put("iconData", iconForAd);
                     }
 
                     adRes.put("coverImage", coverInfo);
