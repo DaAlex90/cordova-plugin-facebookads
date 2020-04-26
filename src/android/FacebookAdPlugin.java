@@ -62,9 +62,7 @@ public class FacebookAdPlugin extends GenericAdPlugin {
         public NativeAd ad;
         public View view;
         public View tracking;
-    }
-
-    ;
+    };
 
     private HashMap<String, FlexNativeAd> nativeAds = new HashMap<String, FlexNativeAd>();
 
@@ -291,12 +289,16 @@ public class FacebookAdPlugin extends GenericAdPlugin {
 
                     JSONObject coverInfo = new JSONObject();
                     if (coverImage != null) {
-                        coverInfo.put("coverData", coverImage);
+						coverInfo.put("height", coverImage.getHeight());
+						coverInfo.put("width", coverImage.getWidth());
+						coverInfo.put("url", coverImage.getUrl());
                     }
 
                     JSONObject iconInfo = new JSONObject();
                     if (iconForAd != null) {
-                        iconInfo.put("iconData", iconForAd);
+						iconInfo.put("height", iconForAd.getHeight());
+						iconInfo.put("width", iconForAd.getWidth());
+						iconInfo.put("url", iconForAd.getUrl());
                     }
 
                     adRes.put("coverImage", coverInfo);
